@@ -1,19 +1,16 @@
 #!/bin/bash
 # ---------------------------------------------------------------------------
-# new_script - Bash shell script template generator
+# Make widget, small shell script to copy and paste files for onkyo remote into 
+# a Dashboard widget
 #
-# Usage: new_script [-h|--help] [-q|--quiet] [-s|--root] [script]
+# Usage: make_widget [-h] [-f] [-v] arg [-o] arg [-n] arg"
 #
 # Revision history:
-# 2012-05-14    Created
+# 2013-10-31    Created
 # ---------------------------------------------------------------------------
-#defaults
-#ARGS=$(getopt -n "$0"  -o hvfon: --long "help,version,force,out,name:"  -- "$@")
-
 
 PROGNAME=${0##*/}
 VERSION="0.1"
-SCRIPT_SHELL=${SHELL}
 DEFAULT_RELEASE_PATH="./releases/$VERSION/"
 DEFAULT_NAME="Onkyo Remote"
 #vars for parsing
@@ -25,7 +22,7 @@ name="$DEFAULT_NAME"
 
 # helper methods
 usage() {
-	echo "Usage: ${PROGNAME} [-h|--help] [-f|--force] [-v|--version] arg [-o|--output] arg [-n|--name] arg"
+	echo "Usage: ${PROGNAME} [-h] [-f] [-v] arg [-o] arg [-n] arg"
 }
 
 help_message() {
@@ -36,15 +33,14 @@ help_message() {
 
 	Options:
 
-	-h, --help      Display this help message and exit.
-	-f, --force     Force overwrite of existing widgets, defaults to false.
-	-v, --version   Specify version, defaults to "$VERSION", affects release folder.
-	-o, --output    Change Output-Folder (defaults to $DEFAULT_RELEASE_PATH).
-	-n, --name      Change Widget-Name (defaults to $DEFAULT_NAME).
+	-h   Display this help message and exit.
+	-f   Force overwrite of existing widgets, defaults to false.
+	-v   Specify version, defaults to "$VERSION", affects release folder.
+	-o   Change Output-Folder (defaults to $DEFAULT_RELEASE_PATH).
+	-n   Change Widget-Name (defaults to $DEFAULT_NAME).
 
 	-EOF-
 }
-
 # parse options
 while getopts "hv:fo:n:" options; do
 	case $options in
