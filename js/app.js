@@ -144,8 +144,7 @@ Remote = (function() {
   };
 
   Remote.prototype.bindEvents = function() {
-    var $r;
-    return ($r = $('.fg img')).on('click', this.onRemoteClick);
+    return $('.fg img').on('click', this.onRemoteClick);
   };
 
   Remote.prototype.onRemoteClick = function(e) {

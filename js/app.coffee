@@ -185,7 +185,7 @@ class Remote
 		$content.appendTo('body').fadeOut(time)
 	
 	bindEvents: =>
-		($r = $('.fg img')).on 'click', @onRemoteClick
+		$('.fg img').on 'click', @onRemoteClick
 
 	onRemoteClick: (e) =>
 		x = e.pageX
