@@ -145,17 +145,13 @@ Remote = (function() {
 
   Remote.prototype.bindEvents = function() {
     var $r;
-    return ($r = $('.fg img')).on('click', '', {
-      offset: $r.offset()
-    }, this.onRemoteClick);
+    return ($r = $('.fg img')).on('click', this.onRemoteClick);
   };
 
   Remote.prototype.onRemoteClick = function(e) {
-    var bottom, button, button_text, left, offset, r, right, top, x, y, _ref, _results;
-    offset = e.data.offset;
-    x = e.clientX - offset.left + $(window).scrollLeft();
-    y = e.clientY - offset.top + $(window).scrollTop();
-    r = this.default_options.IMG_RATIO;
+    var bottom, button, button_text, left, right, top, x, y, _ref, _results;
+    x = e.pageX;
+    y = e.pageY;
     _ref = this.default_options.button_coordinates;
     _results = [];
     for (button_text in _ref) {

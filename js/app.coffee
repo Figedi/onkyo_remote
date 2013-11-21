@@ -185,14 +185,12 @@ class Remote
 		$content.appendTo('body').fadeOut(time)
 	
 	bindEvents: =>
-		($r = $('.fg img')).on 'click', '', { offset: $r.offset() }, @onRemoteClick
-		#insert ip and port forms here
+		($r = $('.fg img')).on 'click', @onRemoteClick
 
 	onRemoteClick: (e) =>
-		offset = e.data.offset
-		x = e.clientX - offset.left + $(window).scrollLeft();
-		y = e.clientY - offset.top + $(window).scrollTop();
-		r = @default_options.IMG_RATIO
+		x = e.pageX
+		y = e.pageY
+		#r = @default_options.IMG_RATIO
 		for button_text, button of @default_options.button_coordinates
 			# for resizing, not implemented yet
 			# left = (r*button[0]).toFixed(0)
@@ -203,9 +201,8 @@ class Remote
 			top = button[1]
 			right = button[0]+button[2]
 			bottom = button[1]+button[3]
-			#console.log "left: #{left}, top: #{top}, right: #{right}, bottom: #{bottom}, x: #{x}, y: #{y}"
-
 			if left <= x <= right && top <= y <= bottom
+				#console.log "left: #{left}, top: #{top}, right: #{right}, bottom: #{bottom}, x: #{x}, y: #{y}"
 				@_create_box(left, top, button[2], button[3])
 				@executeShellCommand(button_text)#
 				break
