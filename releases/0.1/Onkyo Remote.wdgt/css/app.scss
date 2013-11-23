@@ -3,8 +3,22 @@ body {
 	width: 255px;
 	min-height: 100% !important;
 	overflow: hidden;
+  font-family: Helvetica, Arial , sans-serif;
+  font-weight: 300;
+  font-size: 14px;
 }
-.fg {
+.back_forth {
+  position: absolute;
+  width: 50px;
+  height: 20px;
+  left: 130px;
+  top: 533px;
+  color: white;
+
+  cursor: pointer;
+}
+#front {
+ 
 	overflow: hidden;
 	background-color: transparent;
   height: 100%;
@@ -29,6 +43,20 @@ body {
   }
 }
 
+#back {
+  height: 100%;
+  width: 100%;
+  background: transparent url(../img/remote_back.png) no-repeat;
+  color: white;
+  text-align: center;
+  label {
+    float:left;
+    width: 100%;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 14px;
+  }
+}
 .testbox {
 	position: absolute;
   pointer-events: none;

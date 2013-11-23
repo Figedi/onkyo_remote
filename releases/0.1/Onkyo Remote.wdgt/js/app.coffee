@@ -158,9 +158,13 @@ class Remote
 		toggle_button_states: {} #object maintaining the current state of a toggle button, e.g. 'mute_zone1: 1' whereas 1 represents on, 0 off
 
 	constructor: ->
-		@default_options.img_width ||= $('.fg img').width()
-		@default_options.img_height ||= $('.fg img').height()
+		@default_options.img_width ||= $('#front img').width()
+		@default_options.img_height ||= $('#front img').height()
 		@default_options.IMG_RATIO ||= @default_options.img_width/@default_options.ORIGINAL_WIDTH
+		if window.widget
+			rcvrip = widget.preferenceForKey 'onkyoip'
+			@default_options.receiver_ip = rcvrip if rcvrip && rcvrip.length > 0
+			$('#ip_adress').val(@default_options.receiver_ip)
 		@bindEvents()
 		
 		#debug
@@ -185,7 +189,17 @@ class Remote
 		$content.appendTo('body').fadeOut(time)
 	
 	bindEvents: =>
-		($r = $('.fg img')).on 'click', @onRemoteClick
+		$('#front img').on 'click', @onRemoteClick
+		gInfoButton = new AppleInfoButton $('#to_back .config_icon')[0], $('#front')[0], "white", "white", @showBack
+		gDoneButton = new AppleGlassButton $('.done')[0], "Done", @showFront
+		$('#ip_adress').on 'change', @saveIPAdress
+
+	saveIPAdress: (e) =>
+		if window.widget
+			text = $(e.target).val()
+			if text && text.length > 0
+				widget.setPreferenceForKey text, 'onkyoip'
+				@default_options.receiver_ip = text
 
 	onRemoteClick: (e) =>
 		x = e.pageX
@@ -217,5 +231,36 @@ class Remote
 			window.widget.system("/usr/local/bin/octl #{r} #{@default_options.receiver_ip} #{@default_options.receiver_port}")
 			#result = window.widget.system("/usr/local/bin/octl #{r} #{@default_options.receiver_ip} #{@default_options.receiver_port}" , null).outputString
 			#rlog "executed cmd with result: #{result}"
+
+
+	showBack: (e) ->
+		if window.widget
+			$front = $('#front')
+			$back = $('#back')
+			widget.prepareForTransition('ToBack')
+			$front.hide()
+			$back.show()
+			setTimeout ->
+				widget.performTransition()
+			, 0
+
+	showFront: (e) ->
+		if window.widget
+			$front = $('#front')
+			$back = $('#back')
+			widget.prepareForTransition('ToFront')
+			$front.show()
+			$back.hide()
+			setTimeout ->
+				widget.performTransition()
+			, 0
+
+
+		
+
+	
 $ ->
 	window.remote = new Remote()
+	if window.widget
+		widget.onremove = -> window.remote = null
+	

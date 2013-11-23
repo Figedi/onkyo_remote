@@ -7,10 +7,11 @@
 #
 # Revision history:
 # 2013-10-31    Created
+# 2013-11-23    Version Bump to 0.2
 # ---------------------------------------------------------------------------
 
 PROGNAME=${0##*/}
-VERSION="0.1"
+VERSION="0.2"
 DEFAULT_RELEASE_PATH="./releases/$VERSION/"
 DEFAULT_NAME="Onkyo Remote"
 #vars for parsing

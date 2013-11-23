@@ -112,13 +112,21 @@ Remote = (function() {
   function Remote() {
     this.executeShellCommand = __bind(this.executeShellCommand, this);
     this.onRemoteClick = __bind(this.onRemoteClick, this);
+    this.saveIPAdress = __bind(this.saveIPAdress, this);
     this.bindEvents = __bind(this.bindEvents, this);
     this._create_box = __bind(this._create_box, this);
     this.create_boxes = __bind(this.create_boxes, this);
-    var _base, _base1, _base2;
-    (_base = this.default_options).img_width || (_base.img_width = $('.fg img').width());
-    (_base1 = this.default_options).img_height || (_base1.img_height = $('.fg img').height());
+    var rcvrip, _base, _base1, _base2;
+    (_base = this.default_options).img_width || (_base.img_width = $('#front img').width());
+    (_base1 = this.default_options).img_height || (_base1.img_height = $('#front img').height());
     (_base2 = this.default_options).IMG_RATIO || (_base2.IMG_RATIO = this.default_options.img_width / this.default_options.ORIGINAL_WIDTH);
+    if (window.widget) {
+      rcvrip = widget.preferenceForKey('onkyoip');
+      if (rcvrip && rcvrip.length > 0) {
+        this.default_options.receiver_ip = rcvrip;
+      }
+      $('#ip_adress').val(this.default_options.receiver_ip);
+    }
     this.bindEvents();
   }
 
@@ -144,8 +152,22 @@ Remote = (function() {
   };
 
   Remote.prototype.bindEvents = function() {
-    var $r;
-    return ($r = $('.fg img')).on('click', this.onRemoteClick);
+    var gDoneButton, gInfoButton;
+    $('#front img').on('click', this.onRemoteClick);
+    gInfoButton = new AppleInfoButton($('#to_back .config_icon')[0], $('#front')[0], "white", "white", this.showBack);
+    gDoneButton = new AppleGlassButton($('.done')[0], "Done", this.showFront);
+    return $('#ip_adress').on('change', this.saveIPAdress);
+  };
+
+  Remote.prototype.saveIPAdress = function(e) {
+    var text;
+    if (window.widget) {
+      text = $(e.target).val();
+      if (text && text.length > 0) {
+        widget.setPreferenceForKey(text, 'onkyoip');
+        return this.default_options.receiver_ip = text;
+      }
+    }
   };
 
   Remote.prototype.onRemoteClick = function(e) {
@@ -183,10 +205,43 @@ Remote = (function() {
     }
   };
 
+  Remote.prototype.showBack = function(e) {
+    var $back, $front;
+    if (window.widget) {
+      $front = $('#front');
+      $back = $('#back');
+      widget.prepareForTransition('ToBack');
+      $front.hide();
+      $back.show();
+      return setTimeout(function() {
+        return widget.performTransition();
+      }, 0);
+    }
+  };
+
+  Remote.prototype.showFront = function(e) {
+    var $back, $front;
+    if (window.widget) {
+      $front = $('#front');
+      $back = $('#back');
+      widget.prepareForTransition('ToFront');
+      $front.show();
+      $back.hide();
+      return setTimeout(function() {
+        return widget.performTransition();
+      }, 0);
+    }
+  };
+
   return Remote;
 
 })();
 
 $(function() {
-  return window.remote = new Remote();
+  window.remote = new Remote();
+  if (window.widget) {
+    return widget.onremove = function() {
+      return window.remote = null;
+    };
+  }
 });
