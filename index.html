@@ -11,12 +11,15 @@
   </head>
   <body>
     <div id='front'>
+      <div class='debug_msg'></div>
       <div class='back_forth' id='to_back' style='visibility: visible; opacity:0;'>
         <a>
           <span class='config_icon'></span>
         </a>
       </div>
       <img height='600px' src='img/remote2.png' width='255px'>
+      <input id='maxVol' type='range'>
+      <label id='maxVolLabel'>Volume</label>
     </div>
     <div id='back'>
       <label for='ip_adress'>Receiver IP</label>

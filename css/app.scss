@@ -11,14 +11,14 @@ body {
   position: absolute;
   width: 50px;
   height: 20px;
-  left: 130px;
-  top: 533px;
+  left: 125px;
+  top: 585px;
   color: white;
 
   cursor: pointer;
 }
 #front {
- 
+
 	overflow: hidden;
 	background-color: transparent;
   height: 100%;
@@ -40,6 +40,22 @@ body {
   	color:black;
   	margin: 0;
   	padding: 0;
+  }
+  #maxVol {
+    position: relative;
+    bottom: 70px;
+    left: 24px;
+    width: 200px;
+    z-index: 994;
+  }
+  #maxVolLabel {
+    position: relative;
+    bottom: 65px;
+    left: 100px;
+    z-index: 994;
+    font-size: 15px;
+    color: white;
+    text-align: center;
   }
 }
 

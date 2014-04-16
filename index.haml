@@ -7,14 +7,18 @@
 		%script{type: "text/javascript", src: "/System/Library/WidgetResources/AppleClasses/AppleButton.js", charset: "utf-8"}
 		%script{type: "text/javascript", src: "js/jquery.js"}
 		%script{type: "text/javascript", src: "js/app.js"}
-		
+
 		%link{rel: "stylesheet", href: "css/app.css"}
 	%body
 		#front
+			.debug_msg
 			#to_back.back_forth{style: 'visibility: visible; opacity:0;'}
 				%a
 					%span.config_icon
 			%img{src: 'img/remote2.png', height: '600px', width: '255px'}
+			%input#maxVol{type: 'range'}
+			%label#maxVolLabel Volume
+
 		#back
 			%label{for: 'ip_adress'} Receiver IP
 			%input{name: 'ip_adress', type: 'text', value: '', id: 'ip_adress'}

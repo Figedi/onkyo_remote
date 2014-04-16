@@ -104,18 +104,23 @@ Remote = (function() {
       enter: 'OSDENTER',
       audio_home: 'OSDHOME',
       "return": 'OSDEXIT',
-      video: 'OSDVIDEO'
+      video: 'MVLQSTN'
     },
-    toggle_button_states: {}
+    toggle_button_states: {},
+    command_syntax: "/usr/local/bin/onkyo --host {{host}} --port {{port}} {{command}}"
   };
 
   function Remote() {
+    this._makeCommand = __bind(this._makeCommand, this);
+    this.handleResult = __bind(this.handleResult, this);
     this.executeShellCommand = __bind(this.executeShellCommand, this);
     this.onRemoteClick = __bind(this.onRemoteClick, this);
     this.saveIPAdress = __bind(this.saveIPAdress, this);
+    this.onChangeSlider = __bind(this.onChangeSlider, this);
     this.bindEvents = __bind(this.bindEvents, this);
     this._create_box = __bind(this._create_box, this);
     this.create_boxes = __bind(this.create_boxes, this);
+    this._instantiateSlider = __bind(this._instantiateSlider, this);
     var rcvrip, _base, _base1, _base2;
     (_base = this.default_options).img_width || (_base.img_width = $('#front img').width());
     (_base1 = this.default_options).img_height || (_base1.img_height = $('#front img').height());
@@ -126,9 +131,16 @@ Remote = (function() {
         this.default_options.receiver_ip = rcvrip;
       }
       $('#ip_adress').val(this.default_options.receiver_ip);
+      this._instantiateSlider();
     }
     this.bindEvents();
   }
+
+  Remote.prototype._instantiateSlider = function() {
+    var cmd_string;
+    cmd_string = this._makeCommand(this.default_options.receiver_ip, this.default_options.receiver_port, 'MVLQSTN');
+    return window.widget.system(cmd_string, function() {}).onreadoutput = this.handleResult(true, false);
+  };
 
   Remote.prototype.create_boxes = function() {
     var k, r, v, _ref, _results;
@@ -158,7 +170,7 @@ Remote = (function() {
     gDoneButton = new AppleGlassButton($('.done')[0], "Done", this.showFront);
     $('#ip_adress').on('change', this.saveIPAdress);
     console.log;
-    return $('#front').mouseenter(function() {
+    $('#front').mouseenter(function() {
       console.log($('#to_back').css('opacity'));
       if ($('#to_back').css('opacity') !== '1') {
         return $('#to_back').fadeTo(500, 1);
@@ -166,6 +178,16 @@ Remote = (function() {
     }).mouseleave(function() {
       return $('#to_back').fadeTo(500, 0);
     });
+    return $('#maxVol').on('change', this.onChangeSlider);
+  };
+
+  Remote.prototype.onChangeSlider = function(ev) {
+    var cmd_string, val, val_hex, val_proc, _m;
+    val = $(ev.target).val();
+    val_proc = parseInt((val / 100) * 72);
+    val_hex = (_m = val_proc.toString(16)).length < 2 ? "0" + _m : _m;
+    cmd_string = this._makeCommand(this.default_options.receiver_ip, this.default_options.receiver_port, "MVL" + val_hex);
+    return window.widget.system(cmd_string, function() {}).onreadoutput = this.handleResult(false, false);
   };
 
   Remote.prototype.saveIPAdress = function(e) {
@@ -203,15 +225,47 @@ Remote = (function() {
   };
 
   Remote.prototype.executeShellCommand = function(cmd) {
-    var last_state, r;
+    var cmd_string, last_state, r;
     if (window.widget && (r = this.default_options.translate_char2_eiscp[cmd])) {
       if (typeIsArray(r)) {
         last_state = this.default_options.toggle_button_states[cmd] || 0;
         r = this.default_options.translate_char2_eiscp[cmd][last_state];
         this.default_options.toggle_button_states[cmd] = last_state === 0 ? 1 : 0;
       }
-      return window.widget.system("/usr/local/bin/octl " + r + " " + this.default_options.receiver_ip + " " + this.default_options.receiver_port);
+      cmd_string = this._makeCommand(this.default_options.receiver_ip, this.default_options.receiver_port, r);
+      return window.widget.system(cmd_string, function() {}).onreadoutput = this.handleResult(true, false);
     }
+  };
+
+  Remote.prototype.handleResult = function(should_update, should_rlog) {
+    if (should_update == null) {
+      should_update = true;
+    }
+    if (should_rlog == null) {
+      should_rlog = true;
+    }
+    return function(result) {
+      var MVL_MATCH, match, mvl, mvl_curr;
+      MVL_MATCH = /MVL([0-9A-F]{2})/;
+      if (match = result.match(MVL_MATCH)) {
+        mvl_curr = parseInt(match[1], 16);
+        mvl = parseInt((mvl_curr / 72) * 100);
+        if (should_rlog) {
+          rlog("Master Volume: " + mvl + "%");
+        }
+        if (should_update) {
+          return $('#maxVol').val(mvl);
+        }
+      } else {
+        if (should_rlog) {
+          return rlog(result);
+        }
+      }
+    };
+  };
+
+  Remote.prototype._makeCommand = function(ip, port, command) {
+    return this.default_options.command_syntax.replace(/{{host}}/, ip).replace(/{{port}}/, port).replace(/{{command}}/, command);
   };
 
   Remote.prototype.showBack = function(e) {
