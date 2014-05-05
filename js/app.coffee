@@ -210,9 +210,8 @@ class Remote
     $('#maxVol').on 'change', @onChangeSlider
 
   onChangeSlider: (ev) =>
-    val = $(ev.target).val() #is hex 0-100 (equals 0-72 max)
-    val_proc = parseInt((val/100)*72)
-    val_hex =  if (_m = val_proc.toString(16)).length < 2 then "0#{_m}" else _m
+    val = parseInt($(ev.target).val()) #is dec 0-72
+    val_hex =  if (_m = val.toString(16)).length < 2 then "0#{_m}" else _m
     cmd_string = @_makeCommand(@default_options.receiver_ip, @default_options.receiver_port, "MVL#{val_hex}")
     window.widget.system(cmd_string, ->).onreadoutput = @handleResult(false, false)
 
@@ -261,8 +260,7 @@ class Remote
     (result) ->
       MVL_MATCH = /MVL([0-9A-F]{2})/
       if match = result.match(MVL_MATCH) #max vol = 72 dec (hex 48)
-        mvl_curr = parseInt(match[1], 16)
-        mvl = parseInt((mvl_curr/72)*100)
+        mvl = parseInt(match[1], 16)
         rlog "Master Volume: #{mvl}%" if should_rlog
         $('#maxVol').val(mvl) if should_update
       else

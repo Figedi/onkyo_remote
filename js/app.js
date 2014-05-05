@@ -7,9 +7,7 @@ typeIsArray = function(value) {
 
 window.rlog = function(msg, time) {
   var $el, $new_el, bottom, offset, r;
-  if (time == null) {
-    time = 3000;
-  }
+  if (time == null) time = 3000;
   time = (r = msg.length * 100) > 3000 ? 3000 : r;
   offset = ($el = $('.debug_msg .debug_el:last')).offset();
   if (offset) {
@@ -24,6 +22,9 @@ window.rlog = function(msg, time) {
 };
 
 Remote = (function() {
+
+  Remote.name = 'Remote';
+
   Remote.prototype.default_options = {
     receiver_ip: '192.168.178.26',
     receiver_port: 60128,
@@ -112,24 +113,32 @@ Remote = (function() {
 
   function Remote() {
     this._makeCommand = __bind(this._makeCommand, this);
+
     this.handleResult = __bind(this.handleResult, this);
+
     this.executeShellCommand = __bind(this.executeShellCommand, this);
+
     this.onRemoteClick = __bind(this.onRemoteClick, this);
+
     this.saveIPAdress = __bind(this.saveIPAdress, this);
+
     this.onChangeSlider = __bind(this.onChangeSlider, this);
+
     this.bindEvents = __bind(this.bindEvents, this);
+
     this._create_box = __bind(this._create_box, this);
+
     this.create_boxes = __bind(this.create_boxes, this);
+
     this._instantiateSlider = __bind(this._instantiateSlider, this);
+
     var rcvrip, _base, _base1, _base2;
     (_base = this.default_options).img_width || (_base.img_width = $('#front img').width());
     (_base1 = this.default_options).img_height || (_base1.img_height = $('#front img').height());
     (_base2 = this.default_options).IMG_RATIO || (_base2.IMG_RATIO = this.default_options.img_width / this.default_options.ORIGINAL_WIDTH);
     if (window.widget) {
       rcvrip = widget.preferenceForKey('onkyoip');
-      if (rcvrip && rcvrip.length > 0) {
-        this.default_options.receiver_ip = rcvrip;
-      }
+      if (rcvrip && rcvrip.length > 0) this.default_options.receiver_ip = rcvrip;
       $('#ip_adress').val(this.default_options.receiver_ip);
       this._instantiateSlider();
     }
@@ -156,9 +165,7 @@ Remote = (function() {
 
   Remote.prototype._create_box = function(x, y, w, h, time) {
     var $content;
-    if (time == null) {
-      time = 3000;
-    }
+    if (time == null) time = 3000;
     $content = $("<div class='testbox' style='left: " + x + "px; top: " + y + "px; width: " + w + "px; height: " + h + "px'></div>");
     return $content.appendTo('body').fadeOut(time);
   };
@@ -182,10 +189,9 @@ Remote = (function() {
   };
 
   Remote.prototype.onChangeSlider = function(ev) {
-    var cmd_string, val, val_hex, val_proc, _m;
-    val = $(ev.target).val();
-    val_proc = parseInt((val / 100) * 72);
-    val_hex = (_m = val_proc.toString(16)).length < 2 ? "0" + _m : _m;
+    var cmd_string, val, val_hex, _m;
+    val = parseInt($(ev.target).val());
+    val_hex = (_m = val.toString(16)).length < 2 ? "0" + _m : _m;
     cmd_string = this._makeCommand(this.default_options.receiver_ip, this.default_options.receiver_port, "MVL" + val_hex);
     return window.widget.system(cmd_string, function() {}).onreadoutput = this.handleResult(false, false);
   };
@@ -238,28 +244,17 @@ Remote = (function() {
   };
 
   Remote.prototype.handleResult = function(should_update, should_rlog) {
-    if (should_update == null) {
-      should_update = true;
-    }
-    if (should_rlog == null) {
-      should_rlog = true;
-    }
+    if (should_update == null) should_update = true;
+    if (should_rlog == null) should_rlog = true;
     return function(result) {
-      var MVL_MATCH, match, mvl, mvl_curr;
+      var MVL_MATCH, match, mvl;
       MVL_MATCH = /MVL([0-9A-F]{2})/;
       if (match = result.match(MVL_MATCH)) {
-        mvl_curr = parseInt(match[1], 16);
-        mvl = parseInt((mvl_curr / 72) * 100);
-        if (should_rlog) {
-          rlog("Master Volume: " + mvl + "%");
-        }
-        if (should_update) {
-          return $('#maxVol').val(mvl);
-        }
+        mvl = parseInt(match[1], 16);
+        if (should_rlog) rlog("Master Volume: " + mvl + "%");
+        if (should_update) return $('#maxVol').val(mvl);
       } else {
-        if (should_rlog) {
-          return rlog(result);
-        }
+        if (should_rlog) return rlog(result);
       }
     };
   };
