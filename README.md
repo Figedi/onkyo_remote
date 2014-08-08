@@ -29,7 +29,7 @@ Build Version
 -------
 
 Use `gulp build` for default building process. Additionally you can pass
-the `--wversion' flag for a custom version output number
+the `--wversion` flag for a custom version output number
 
 Contribute
 ----------
