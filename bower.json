@@ -1,0 +1,25 @@
+{
+  "name": "Onkyo Remote",
+  "version": "0.0.3",
+  "authors": [
+    "Felix Kaminski <kaminski.felix@gmail.com>"
+  ],
+  "description": "Onkyo Remote Widget for Mac OSX Dashboard",
+  "keywords": [
+    "onkyo",
+    "remote",
+    "widget",
+    "dashboard"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1"
+  }
+}

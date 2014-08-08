@@ -1,0 +1,23 @@
+html
+  head
+    script(type="text/javascript", src="/System/Library/WidgetResources/AppleClasses/AppleInfoButton.js", charset="utf-8")
+    script(type="text/javascript", src="/System/Library/WidgetResources/AppleClasses/AppleAnimator.js", charset="utf-8")
+    script(type="text/javascript", src="/System/Library/WidgetResources/AppleClasses/AppleButton.js", charset="utf-8")
+    script(type="text/javascript", src="vendor/js/vendor.min.js")
+    script(type="text/javascript", src="js/app.min.js")
+    link(rel="stylesheet", href="css/app.css")
+  body
+    #front
+      img(src="img/remote_front.png", height="600", width="255")
+      .debug_msg
+      #to_back.back_forth(style="visibility: visible; opacity:0;")
+        a
+          span.config_icon
+      input#maxVol(type="range", max="72", step="1")
+      label#maxVolLabel Volume
+    #back
+      img(src="img/remote_front.png", height="600", width="255")
+      label(for="ip_adress") Receiver IP
+      input(name="ip_adress", type="text", value="", id="ip_adress")
+      .done
+
