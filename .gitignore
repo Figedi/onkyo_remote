@@ -1,3 +1,5 @@
-build/
+build/*
+!build/.reference_widget.wdgt/*
+!build/.reference_widget.wdgt/
 node_modules/
 www/
