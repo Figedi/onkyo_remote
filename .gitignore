@@ -1,5 +1,6 @@
 build/*
 !build/.reference_widget.wdgt/*
 !build/.reference_widget.wdgt/
+.DS_Store
 node_modules/
 www/
