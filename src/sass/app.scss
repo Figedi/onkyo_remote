@@ -1,8 +1,12 @@
+html {
+  width: 255px;
+}
 body {
-	height: 600px;
+//	height: 600px;
 	width: 255px;
-	min-height: 100% !important;
-	overflow: hidden;
+  margin: 0;
+	//min-height: 100% !important;
+	//overflow: hidden;
   font-family: Helvetica, Arial , sans-serif;
   font-weight: 300;
   font-size: 14px;
@@ -18,10 +22,10 @@ body {
   cursor: pointer;
 }
 #front {
-	overflow: hidden;
-	background-color: transparent;
-  height: 100%;
-  width: 100%;
+	//overflow: hidden;
+	//background-color: transparent;
+  //height: 100%;
+  //width: 100%;
   .debug_msg {
   	position: absolute;
   	top:0;
@@ -57,22 +61,44 @@ body {
     text-align: center;
   }
 }
-
+#ip_adress {
+  position: absolute;
+  top: 50px;
+  left: 5px;
+  width: 245px;
+  height: 15px;
+}
 #back {
-  height: 100%;
-  width: 100%;
-  color: white;
-  text-align: center;
+  display: none;
+  //height: 100%;
+  //width: 100%;
+  //
+  //text-align: center;
+  .done {
+    position: absolute;
+    left: 96px;
+    top: 75px;
+  }
   label {
-    float:left;
-    width: 100%;
+    color: white;
     font-weight: bold;
-    margin-top: 30px;
-    margin-bottom: 14px;
+    position: absolute;
+    top: 20px;
+    left: 85px;
   }
 }
 .testbox {
 	position: absolute;
   pointer-events: none;
 	border: 1px solid red;
+}
+.backImg {
+  position: absolute;
+  display: block;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  width: auto;
+  height: auto;
 }

@@ -1,5 +1,6 @@
 ######
-# Onkyo remote control javascript class, uses octl (thx to https://github.com/janten/onkyo-eiscp-remote-mac!)
+# Onkyo remote control javascript class, uses octl (thx to
+# https://github.com/janten/onkyo-eiscp-remote-mac!)
 # for communication of widget <> receiver
 #
 # NOTE: octl must be in /usr/local/bin
@@ -30,46 +31,42 @@ class Remote
     ORIGINAL_WIDTH: 897
     IMG_RATIO: 0.2842809364548495 #for 255x600
     button_coordinates:
-      #button: [left, top, x, y]
-      #converted to 255x600
-      on_off: [38, 41, 30, 31]
-      bd_dvd: [35, 86, 36, 20]
-      custom: [36, 121, 36, 20]
-      receiver: [35, 156, 36, 20]
-      tv: [35, 191, 36, 20]
-      tv_on_off: [35, 231, 36, 20]
-      input: [35, 277, 36, 20]
-      cbl_sat: [88, 85, 37, 20]
-      aux: [88, 120, 37, 20]
-      tv_cd: [88, 156, 37, 20]
-      mute_zone1: [88, 191, 37, 20]
-      vol_up_zone1: [93, 227, 30, 31]
-      vol_down_zone1: [93, 258, 30, 38]
-      game: [142, 85, 36, 21]
-      am: [142, 120, 36, 21]
-      net: [142, 155, 36, 21]
-      display: [142, 191, 36, 21]
-      ch_disc: [147, 226, 30, 31]
-      album: [147, 257, 30, 38]
-      source: [200, 40, 30, 31]
-      pc: [198, 85, 36, 20]
-      fm: [198, 120, 36, 20]
-      usb: [198, 156, 36, 20]
-      mute_zone2: [198, 191, 36, 20]
-      vol_up_zone2: [200, 224, 34, 37]
-      vol_down_zone2: [200, 261, 34, 39]
-      guide: [46, 322, 23, 24]
-      setup: [46, 402, 23, 24]
-      arr_left: [77, 348, 25, 60]
-      arr_top: [109, 314, 60, 26]
-      arr_right: [170, 348, 25, 60]
-      arr_bottom: [109, 408, 60, 26]
-      enter: [113, 352, 43, 42]
-      audio_home: [124, 449, 23, 24]
-      return: [201, 402, 23, 24]
-      video: [201, 322, 23, 24]
-
-
+      on_off: [ 30, 32,30,31]
+      bd_dvd: [ 27, 77,36,20]
+      custom: [ 28,112,36,20]
+      receiver: [ 27,147,36,20]
+      tv: [ 27,182,36,20]
+      tv_on_off: [ 27,222,36,20]
+      input: [ 27,268,36,20]
+      cbl_sat: [ 80, 76,37,20]
+      aux: [ 80,111,37,20]
+      tv_cd: [ 80,147,37,20]
+      mute_zone1: [ 80,182,37,20]
+      vol_up_zone1: [ 85,218,30,31]
+      vol_down_zone1: [ 85,249,30,38]
+      game: [134, 76,36,21]
+      am: [134,111,36,21]
+      net: [134,146,36,21]
+      display: [134,182,36,21]
+      ch_disc: [139,217,30,31]
+      album: [139,248,30,38]
+      source: [192, 31,30,31]
+      pc: [190, 76,36,20]
+      fm: [190,111,36,20]
+      usb: [190,147,36,20]
+      mute_zone2: [190,182,36,20]
+      vol_up_zone2: [192,215,34,37]
+      vol_down_zone2: [192,252,34,39]
+      guide: [ 38,313,23,24]
+      setup: [ 38,393,23,24]
+      arr_left: [ 69,339,25,60]
+      arr_top: [101,305,60,26]
+      arr_right: [162,339,25,60]
+      arr_bottom: [101,399,60,26]
+      enter: [105,343,43,42]
+      audio_home: [116,440,23,24]
+      return: [193,393,23,24]
+      video: [193,313,23,24]
       #original_coordinates for original height
       #1st rows
       # on_off: [101, 110, 107, 110]
@@ -155,11 +152,14 @@ class Remote
       audio_home: 'OSDHOME'
       return: 'OSDEXIT'
       video: 'MVLQSTN'#'OSDVIDEO'
-    toggle_button_states: {} #object maintaining the current state of a toggle button, e.g. 'mute_zone1: 1' whereas 1 represents on, 0 off
-    command_syntax: "/usr/local/bin/onkyo --host {{host}} --port {{port}} {{command}}"
-    # "/usr/local/bin/octl {{command}} {{host}} {{port}}"
+    # object maintaining the current state of a toggle button, e.g.
+    # 'mute_zone1: 1' whereas 1 represents on, 0 off
+    toggle_button_states: {}
+    #command_syntax: "/usr/local/bin/onkyo --host {{host}} --port {{port}} {{command}}"
+    command_syntax: "octl {{command}} {{host}} {{port}}"
     #
   constructor: ->
+
     @default_options.img_width ||= $('#front img').width()
     @default_options.img_height ||= $('#front img').height()
     @default_options.IMG_RATIO ||= @default_options.img_width/@default_options.ORIGINAL_WIDTH
@@ -171,7 +171,7 @@ class Remote
     @bindEvents()
 
     #debug
-    #@create_boxes()
+    #@_createBoxes()
     # if window.widget
     #   rlog window.widget
     #   if window.widget.system
@@ -183,16 +183,15 @@ class Remote
 
   _instantiateSlider: =>
     cmd_string = @_makeCommand(@default_options.receiver_ip, @default_options.receiver_port, 'MVLQSTN')
-    window.widget.system(cmd_string, ->).onreadoutput = @handleResult(true, false);
+    window.widget.system(cmd_string, @handleResult(true, false));
 
-
-  create_boxes: => #for debugging the spaces
+  _createBoxes: => #for debugging the spaces
     r = @default_options.IMG_RATIO
     for k,v of @default_options.button_coordinates
       #v is the array of coordinates
-      @_create_box(v[0],v[1],v[2], v[3])
+      @_createBox(v[0],v[1],v[2], v[3])
 
-  _create_box: (x,y,w,h, time=3000) =>
+  _createBox: (x,y,w,h, time=3000) =>
     $content = $("<div class='testbox' style='left: #{x}px; top: #{y}px; width: #{w}px; height: #{h}px'></div>")
     $content.appendTo('body').fadeOut(time)
 
@@ -201,12 +200,10 @@ class Remote
     gInfoButton = new AppleInfoButton $('#to_back .config_icon')[0], $('#front')[0], "white", "white", @showBack
     gDoneButton = new AppleGlassButton $('.done')[0], "Done", @showFront
     $('#ip_adress').on 'change', @saveIPAdress
-    console.log
-    $('#front').mouseenter(->
-      console.log $('#to_back').css('opacity')
+    $('#front').on 'mouseenter', ->
       $('#to_back').fadeTo(500,1) if $('#to_back').css('opacity') != '1'
-    ).mouseleave ->
-      $('#to_back').fadeTo(500,0)
+    $('#front').on 'mouseleave', -> $('#to_back').fadeTo(500,0)
+
     $('#maxVol').on 'mouseup', @onChangeSlider
     $('#maxVol').on 'change', false
 
@@ -214,7 +211,7 @@ class Remote
     val = parseInt($(ev.target).val()) #is dec 0-72
     val_hex =  if (_m = val.toString(16)).length < 2 then "0#{_m}" else _m
     cmd_string = @_makeCommand(@default_options.receiver_ip, @default_options.receiver_port, "MVL#{val_hex}")
-    window.widget.system(cmd_string, ->).onreadoutput = @handleResult(false, false)
+    window.widget.system(cmd_string, @handleResult(false, false))
 
   saveIPAdress: (e) =>
     if window.widget
@@ -224,6 +221,7 @@ class Remote
         @default_options.receiver_ip = text
 
   onRemoteClick: (e) =>
+
     x = e.pageX
     y = e.pageY
     #r = @default_options.IMG_RATIO
@@ -239,7 +237,8 @@ class Remote
       bottom = button[1]+button[3]
       if left <= x <= right && top <= y <= bottom
         #console.log "left: #{left}, top: #{top}, right: #{right}, bottom: #{bottom}, x: #{x}, y: #{y}"
-        @_create_box(left, top, button[2], button[3])
+        @_createBox(left, top, button[2], button[3])
+        console.log "click", button_text
         @executeShellCommand(button_text)#
         break
 
@@ -251,7 +250,7 @@ class Remote
         r = @default_options.translate_char2_eiscp[cmd][last_state] #get the command
         @default_options.toggle_button_states[cmd] = if last_state == 0 then 1 else 0 #toggle idx
       cmd_string = @_makeCommand(@default_options.receiver_ip, @default_options.receiver_port, r)
-      window.widget.system(cmd_string, ->).onreadoutput = @handleResult(true, false)
+      window.widget.system(cmd_string,  @handleResult(true, false))
 
   handleResult: (should_update = true , should_rlog = true) => #for debug purposes, allows to log the mvl in textform
     (result) ->
@@ -269,22 +268,17 @@ class Remote
 
 
   showBack: (e) ->
-    return unless window.widget
-    widget.prepareForTransition('ToBack')
+    widget.prepareForTransition('ToBack') if window.widget
     $('#front').hide()
     $('#back').show()
-    setTimeout ->
-      widget.performTransition()
-    , 0
+    setTimeout((-> widget.performTransition()),0) if window.widget
 
   showFront: (e) ->
-    return unless window.widget
-    widget.prepareForTransition('ToFront')
+    widget.prepareForTransition('ToFront') if window.widget
     $('#front').show()
     $('#back').hide()
-    setTimeout ->
-      widget.performTransition()
-    , 0
+    setTimeout((-> widget.performTransition()),0) if window.widget
+
 
 $ ->
   window.remote = new Remote()

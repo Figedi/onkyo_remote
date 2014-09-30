@@ -13,7 +13,7 @@ gulp.task('coffee', function() {
             extensions: ['.coffee'],
             shim: config.shim
         }))
-        .on('error', function(error) { gutil.log(error) })
+        .on('error', function(error) { return gutil.log(error); })
         .pipe(concat('app.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('www/js'));

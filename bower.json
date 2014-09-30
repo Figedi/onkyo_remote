@@ -20,6 +20,15 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.1.1"
+    "zepto": "~1.1.4"
+  },
+  "overrides": {
+    "zepto": {
+      "main": [
+        "zepto.js",
+        "fx.js",
+        "fx_methods.js"
+      ]
+    }
   }
 }
