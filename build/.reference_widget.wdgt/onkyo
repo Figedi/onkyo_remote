@@ -1,0 +1,10 @@
+#!/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python
+# EASY-INSTALL-ENTRY-SCRIPT: 'onkyo-eiscp==0.9.1','console_scripts','onkyo'
+__requires__ = 'onkyo-eiscp==0.9.1'
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('onkyo-eiscp==0.9.1', 'console_scripts', 'onkyo')()
+    )

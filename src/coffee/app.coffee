@@ -1,6 +1,6 @@
 ######
-# Onkyo remote control javascript class, uses octl (thx to
-# https://github.com/janten/onkyo-eiscp-remote-mac!)
+# Onkyo remote control javascript class, uses onkyo-binary (thx to
+# https://github.com/miracle2k/onkyo-eiscp !)
 # for communication of widget <> receiver
 #
 # NOTE: octl must be in /usr/local/bin
@@ -14,7 +14,7 @@ window.rlog = (msg, time=3000) ->
   time = if (r = msg.length*100) > 3000 then 3000 else r
   #create el upon last .debug_el
 
-  offset = ($el = $('.debug_msg .debug_el:last')).offset()
+  offset = ($el = $('.debug_msg .debug_el').last()).offset()
   if offset
     bottom = offset.top+2+$el.height() #offset + gap+height = bottom of element
   else
@@ -24,13 +24,13 @@ window.rlog = (msg, time=3000) ->
   $new_el.appendTo('.debug_msg').fadeOut time, -> $(@).remove()
 
 class Remote
-  default_options:
-    receiver_ip: '192.168.178.26' #currently 192.168.178.26
-    receiver_port: 60128
+  defaultOptions:
+    receiverIp: '192.168.178.26' #currently 192.168.178.26
+    receiverPort: 60128
     ORIGINAL_HEIGHT: 2107
     ORIGINAL_WIDTH: 897
     IMG_RATIO: 0.2842809364548495 #for 255x600
-    button_coordinates:
+    buttonCoordinates:
       on_off: [ 30, 32,30,31]
       bd_dvd: [ 27, 77,36,20]
       custom: [ 28,112,36,20]
@@ -155,18 +155,17 @@ class Remote
     # object maintaining the current state of a toggle button, e.g.
     # 'mute_zone1: 1' whereas 1 represents on, 0 off
     toggle_button_states: {}
-    #command_syntax: "/usr/local/bin/onkyo --host {{host}} --port {{port}} {{command}}"
-    command_syntax: "octl {{command}} {{host}} {{port}}"
+    command_syntax: "onkyo --host {{host}} --port {{port}} {{command}}"
     #
   constructor: ->
 
-    @default_options.img_width ||= $('#front img').width()
-    @default_options.img_height ||= $('#front img').height()
-    @default_options.IMG_RATIO ||= @default_options.img_width/@default_options.ORIGINAL_WIDTH
+    @defaultOptions.img_width ||= $('#front img').width()
+    @defaultOptions.img_height ||= $('#front img').height()
+    @defaultOptions.IMG_RATIO ||= @defaultOptions.img_width/@defaultOptions.ORIGINAL_WIDTH
     if window.widget
       rcvrip = widget.preferenceForKey 'onkyoip'
-      @default_options.receiver_ip = rcvrip if rcvrip && rcvrip.length > 0
-      $('#ip_adress').val(@default_options.receiver_ip)
+      @defaultOptions.receiverIp = rcvrip if rcvrip && rcvrip.length > 0
+      $('#ip_adress').val(@defaultOptions.receiverIp)
       @_instantiateSlider()
     @bindEvents()
 
@@ -182,16 +181,16 @@ class Remote
     #   rlog "widget not defined"
 
   _instantiateSlider: =>
-    cmd_string = @_makeCommand(@default_options.receiver_ip, @default_options.receiver_port, 'MVLQSTN')
-    window.widget.system(cmd_string, @handleResult(true, false));
+    cmdString = @_makeCommand(@defaultOptions.receiverIp, @defaultOptions.receiverPort, 'MVLQSTN')
+    window.widget.system(cmdString, ->).onreadoutput = @handleResult(true, false)
 
   _createBoxes: => #for debugging the spaces
-    r = @default_options.IMG_RATIO
-    for k,v of @default_options.button_coordinates
+    r = @defaultOptions.IMG_RATIO
+    for k,v of @defaultOptions.buttonCoordinates
       #v is the array of coordinates
       @_createBox(v[0],v[1],v[2], v[3])
 
-  _createBox: (x,y,w,h, time=3000) =>
+  _createBox: (x, y, w, h, time = 3000) =>
     $content = $("<div class='testbox' style='left: #{x}px; top: #{y}px; width: #{w}px; height: #{h}px'></div>")
     $content.appendTo('body').fadeOut(time)
 
@@ -209,23 +208,23 @@ class Remote
 
   onChangeSlider: (ev) =>
     val = parseInt($(ev.target).val()) #is dec 0-72
-    val_hex =  if (_m = val.toString(16)).length < 2 then "0#{_m}" else _m
-    cmd_string = @_makeCommand(@default_options.receiver_ip, @default_options.receiver_port, "MVL#{val_hex}")
-    window.widget.system(cmd_string, @handleResult(false, false))
+    val_hex =  if (_m = val.toString(16).toUpperCase()).length < 2 then "0#{_m}" else _m
+    cmdString = @_makeCommand(@defaultOptions.receiverIp, @defaultOptions.receiverPort, "MVL#{val_hex}")
+    window.widget.system(cmdString, ->).onreadoutput = @handleResult(false, false)
 
   saveIPAdress: (e) =>
     if window.widget
       text = $(e.target).val()
       if text && text.length > 0
         widget.setPreferenceForKey text, 'onkyoip'
-        @default_options.receiver_ip = text
+        @defaultOptions.receiverIp = text
 
   onRemoteClick: (e) =>
 
     x = e.pageX
     y = e.pageY
-    #r = @default_options.IMG_RATIO
-    for button_text, button of @default_options.button_coordinates
+    #r = @defaultOptions.IMG_RATIO
+    for button_text, button of @defaultOptions.buttonCoordinates
       # for resizing, not implemented yet
       # left = (r*button[0]).toFixed(0)
       # top = (r*button[1]).toFixed(0)
@@ -243,28 +242,28 @@ class Remote
         break
 
   executeShellCommand: (cmd) =>
-    if window.widget && (r = @default_options.translate_char2_eiscp[cmd])
+    if window.widget && (r = @defaultOptions.translate_char2_eiscp[cmd])
       if typeIsArray(r)
         #r = [on, off] ==> choose the right index based on last state
-        last_state = @default_options.toggle_button_states[cmd] || 0 # idx, defaults to off
-        r = @default_options.translate_char2_eiscp[cmd][last_state] #get the command
-        @default_options.toggle_button_states[cmd] = if last_state == 0 then 1 else 0 #toggle idx
-      cmd_string = @_makeCommand(@default_options.receiver_ip, @default_options.receiver_port, r)
-      window.widget.system(cmd_string,  @handleResult(true, false))
+        last_state = @defaultOptions.toggle_button_states[cmd] || 0 # idx, defaults to off
+        r = @defaultOptions.translate_char2_eiscp[cmd][last_state] #get the command
+        @defaultOptions.toggle_button_states[cmd] = if last_state == 0 then 1 else 0 #toggle idx
+      cmdString = @_makeCommand(@defaultOptions.receiverIp, @defaultOptions.receiverPort, r)
+      window.widget.system(cmdString, ->).onreadoutput = @handleResult(true, false)
 
-  handleResult: (should_update = true , should_rlog = true) => #for debug purposes, allows to log the mvl in textform
+  handleResult: (shouldUpdate = true , shouldRlog = true) => #for debug purposes, allows to log the mvl in textform
     (result) ->
       MVL_MATCH = /MVL([0-9A-F]{2})/
       if match = result.match(MVL_MATCH) #max vol = 72 dec (hex 48)
         mvl = parseInt(match[1], 16)
-        rlog "Master Volume: #{mvl}%" if should_rlog
-        $('#maxVol').val(mvl) if should_update
+        rlog "Master Volume: #{mvl}%, result: #{result}" if shouldRlog
+        $('#maxVol').val(mvl) if shouldUpdate
       else
-        rlog result if should_rlog
+        rlog result if shouldRlog
 
 
   _makeCommand: (ip, port, command) =>
-    @default_options.command_syntax.replace(/{{host}}/, ip).replace(/{{port}}/, port).replace(/{{command}}/, command)
+    @defaultOptions.command_syntax.replace(/{{host}}/, ip).replace(/{{port}}/, port).replace(/{{command}}/, command)
 
 
   showBack: (e) ->

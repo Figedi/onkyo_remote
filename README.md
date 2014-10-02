@@ -2,7 +2,8 @@ onkyo_remote
 ============
 
 Onkyo Remote is a dashboard widget which can be used to control your receiver over the ethernet from your dashboard.
-It requires you to have installed `octl` (see https://github.com/janten/onkyo-eiscp-remote-mac and compile from scratch).
+There is a built in binary `onkyo` from https://github.com/miracle2k/onkyo-eiscp . If that doesn't work, you have to compile
+for your system from scratch
 Other than that you should be fine.
 
 Install
