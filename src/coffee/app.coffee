@@ -155,7 +155,7 @@ class Remote
     # object maintaining the current state of a toggle button, e.g.
     # 'mute_zone1: 1' whereas 1 represents on, 0 off
     toggle_button_states: {}
-    command_syntax: "onkyo --host {{host}} --port {{port}} {{command}}"
+    command_syntax: "/usr/local/bin/onkyo --host {{host}} --port {{port}} {{command}}"
     #
   constructor: ->
 
