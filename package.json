@@ -1,6 +1,6 @@
 {
   "name": "onkyo_remote",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Onkyo Remote Widget for Mac OSX Dashboard",
   "main": "gulpfile.js",
   "dependencies": {

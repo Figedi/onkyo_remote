@@ -283,4 +283,6 @@ $ ->
   window.remote = new Remote()
   if window.widget
     widget.onremove = -> window.remote = null
+    widget.onfocus = -> window.remote._instantiateSlider()
+    widget.onshow = -> window.remote._instantiateSlider()
 
